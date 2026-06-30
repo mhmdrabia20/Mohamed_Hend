@@ -1,0 +1,652 @@
+/* ===========================
+   RESET
+=========================== */
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+scroll-behavior:smooth;
+}
+
+body{
+
+font-family:'Cairo',sans-serif;
+
+background:#111;
+
+color:white;
+
+overflow-x:hidden;
+
+}
+
+/* ===========================
+BACKGROUND
+=========================== */
+
+body::before{
+
+content:"";
+
+position:fixed;
+
+top:0;
+left:0;
+
+width:100%;
+height:100%;
+
+background:url("https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1800&q=80");
+
+background-size:cover;
+
+background-position:center;
+
+z-index:-2;
+
+}
+
+body::after{
+
+content:"";
+
+position:fixed;
+
+width:100%;
+height:100%;
+
+background:rgba(0, 0, 0, 0.55);
+
+z-index:-1;
+
+}
+
+/* ===========================
+LOADER
+=========================== */
+
+#loader{
+
+position:fixed;
+
+inset:0;
+
+background:#111;
+
+display:flex;
+
+justify-content:center;
+
+align-items:center;
+
+flex-direction:column;
+
+z-index:99999;
+
+}
+
+.loader-heart{
+
+width:70px;
+
+height:70px;
+
+background:#FFD700;
+
+transform:rotate(45deg);
+
+animation:pulse 1s infinite;
+
+}
+
+.loader-heart:before,
+.loader-heart:after{
+
+content:"";
+
+position:absolute;
+
+width:70px;
+height:70px;
+
+background:#FFD700;
+
+border-radius:50%;
+
+}
+
+.loader-heart:before{
+
+left:-35px;
+
+}
+
+.loader-heart:after{
+
+top:-35px;
+
+}
+
+@keyframes pulse{
+
+0%{transform:rotate(45deg) scale(.8);}
+
+50%{transform:rotate(45deg) scale(1);}
+
+100%{transform:rotate(45deg) scale(.8);}
+
+}
+
+/* ===========================
+NAVBAR
+=========================== */
+
+nav{
+
+position:fixed;
+
+top:0;
+
+width:100%;
+
+padding:20px 8%;
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:center;
+
+background:rgba(255,255,255,.05);
+
+backdrop-filter:blur(18px);
+
+z-index:1000;
+
+}
+
+.logo{
+
+font-size:30px;
+
+font-weight:bold;
+
+color:#FFD700;
+
+}
+
+nav ul{
+
+display:flex;
+
+gap:30px;
+
+list-style:none;
+
+}
+
+nav a{
+
+color:white;
+
+text-decoration:none;
+
+transition:.3s;
+
+}
+
+nav a:hover{
+
+color:#FFD700;
+
+}
+
+/* ===========================
+HERO
+=========================== */
+
+.hero{
+
+height:100vh;
+
+display:flex;
+
+justify-content:center;
+
+align-items:center;
+
+padding:20px;
+
+text-align:center;
+
+}
+
+.glass{
+
+background:rgba(255,255,255,.08);
+
+padding:60px;
+
+border-radius:30px;
+
+backdrop-filter:blur(25px);
+
+box-shadow:0 0 40px rgba(206, 186, 8, 0.2);
+
+}
+
+.glass h3{
+
+font-size:22px;
+
+font-weight:300;
+
+}
+
+.glass h1{
+
+font-family:'Great Vibes',cursive;
+
+font-size:90px;
+
+color:#FFD700;
+
+margin:30px 0;
+
+}
+
+.glass span{
+
+color:rgb(238, 238, 238);
+
+}
+
+.glass p{
+
+font-size:22px;
+
+margin-bottom:40px;
+
+}
+
+/* ===========================
+COUNTDOWN
+=========================== */
+
+#countdown{
+
+display:flex;
+
+justify-content:center;
+
+gap:20px;
+
+flex-wrap:wrap;
+
+margin-bottom:40px;
+
+}
+
+#countdown div{
+
+width:110px;
+
+padding:20px;
+
+border-radius:20px;
+
+background:white;
+
+color:#222;
+
+}
+
+#countdown span{
+
+display:block;
+
+font-size:40px;
+
+font-weight:bold;
+
+color:#D4AF37;
+
+}
+
+/* ===========================
+BUTTON
+=========================== */
+
+.btn{
+
+display:inline-block;
+
+padding:18px 40px;
+
+background:linear-gradient(45deg,#FFD700,#D4AF37);
+
+color:#111;
+
+font-weight:bold;
+
+text-decoration:none;
+
+border-radius:50px;
+
+transition:.4s;
+
+}
+
+.btn:hover{
+
+transform:translateY(-5px);
+
+box-shadow:0 0 30px gold;
+
+}
+
+/* ===========================
+SECTIONS
+=========================== */
+
+section{
+
+padding:100px 10%;
+
+}
+
+section h2{
+
+font-size:45px;
+
+text-align:center;
+
+color:#FFD700;
+
+margin-bottom:50px;
+
+}
+
+/* ===========================
+STORY
+=========================== */
+
+#story p{
+
+max-width:800px;
+
+margin:auto;
+
+text-align:center;
+
+font-size:22px;
+
+line-height:2;
+
+}
+
+/* ===========================
+GALLERY
+=========================== */
+
+.gallery{
+
+display:grid;
+
+grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+
+gap:25px;
+
+}
+
+.gallery img{
+
+width:100%;
+
+border-radius:20px;
+
+transition:.5s;
+
+cursor:pointer;
+
+}
+
+.gallery img:hover{
+
+transform:scale(1.05);
+
+box-shadow:0 0 25px gold;
+
+}
+
+/* ===========================
+CARDS
+=========================== */
+
+.cards{
+
+display:grid;
+
+grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+
+gap:30px;
+
+}
+
+.card{
+
+padding:35px;
+
+border-radius:25px;
+
+background:rgba(255,255,255,.08);
+
+backdrop-filter:blur(18px);
+
+text-align:center;
+
+transition:.4s;
+
+}
+
+.card:hover{
+
+transform:translateY(-10px);
+
+}
+
+.card i{
+
+font-size:45px;
+
+color:#FFD700;
+
+margin-bottom:20px;
+
+}
+
+/* ===========================
+MAP
+=========================== */
+
+iframe{
+
+width:100%;
+
+height:450px;
+
+border:none;
+
+border-radius:20px;
+
+}
+
+/* ===========================
+FORM
+=========================== */
+
+form{
+
+max-width:700px;
+
+margin:auto;
+
+display:flex;
+
+flex-direction:column;
+
+gap:20px;
+
+}
+
+input,
+textarea{
+
+padding:18px;
+
+border:none;
+
+border-radius:15px;
+
+font-size:18px;
+
+}
+
+button{
+
+padding:18px;
+
+border:none;
+
+border-radius:40px;
+
+background:#FFD700;
+
+font-size:20px;
+
+cursor:pointer;
+
+transition:.4s;
+
+}
+
+button:hover{
+
+transform:scale(1.05);
+
+}
+
+/* ===========================
+FOOTER
+=========================== */
+
+footer{
+
+padding:40px;
+
+text-align:center;
+
+background:#000;
+
+}
+
+/* ===========================
+RESPONSIVE
+=========================== */
+
+@media(max-width:768px){
+
+.glass{
+
+padding:35px;
+
+}
+
+.glass h1{
+
+font-size:60px;
+
+}
+
+nav ul{
+
+display:none;
+
+}
+
+#countdown div{
+
+width:90px;
+
+}
+
+section{
+
+padding:80px 7%;
+
+}
+
+}
+.hidden{
+opacity:0;
+transform:translateY(60px);
+transition:1s;
+}
+
+.show{
+opacity:1;
+transform:translateY(0);
+}
+
+.flower{
+position:fixed;
+top:-40px;
+animation:fall linear forwards;
+pointer-events:none;
+z-index:999;
+}
+
+@keyframes fall{
+to{
+transform:translateY(110vh) rotate(360deg);
+}
+}
+
+#topBtn,
+#musicBtn{
+position:fixed;
+right:20px;
+width:55px;
+height:55px;
+border:none;
+border-radius:50%;
+background:#FFD700;
+cursor:pointer;
+font-size:22px;
+box-shadow:0 0 15px rgba(255,215,0,.5);
+z-index:9999;
+}
+
+#topBtn{
+bottom:90px;
+display:none;
+}
+
+#musicBtn{
+bottom:20px;
+}
+
+.confetti{
+position:fixed;
+top:-10px;
+width:10px;
+height:10px;
+animation:confettiFall linear forwards;
+}
+
+@keyframes confettiFall{
+to{
+transform:translateY(110vh) rotate(720deg);
+}
+}
