@@ -1,322 +1,305 @@
-
-window.addEventListener("load", () => {
-
-const loader = document.getElementById("loader");
-
-setTimeout(() => {
-
-loader.style.opacity = "0";
-
-loader.style.visibility = "hidden";
-
-},1500);
-
-});
-
+const isTouch = window.matchMedia("(hover: none)").matches;
+const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 /* ===========================
-COUNTDOWN
+   LOADER
 =========================== */
+window.addEventListener("load", () => {
+  const loader = document.getElementById("loader");
+  setTimeout(() => {
+    loader.style.opacity = "0";
+    loader.style.visibility = "hidden";
+  }, 1200);
+});
 
+/* ===========================
+   MOBILE MENU
+=========================== */
+const menuBtn = document.getElementById("menuBtn");
+const menu = document.getElementById("menu");
+
+function closeMenu() {
+  menu.classList.remove("open");
+  menuBtn.classList.remove("open");
+  menuBtn.setAttribute("aria-expanded", "false");
+}
+
+menuBtn.addEventListener("click", () => {
+  const open = menu.classList.toggle("open");
+  menuBtn.classList.toggle("open", open);
+  menuBtn.setAttribute("aria-expanded", String(open));
+});
+
+menu.querySelectorAll("a").forEach(a => a.addEventListener("click", closeMenu));
+
+document.addEventListener("click", e => {
+  if (!e.target.closest("nav")) closeMenu();
+});
+
+/* ===========================
+   COUNTDOWN
+=========================== */
 const weddingDate = new Date("March 12, 2027 20:00:00").getTime();
 
-const countdown = setInterval(()=>{
+function updateCountdown() {
+  const distance = weddingDate - Date.now();
 
-const now = new Date().getTime();
+  if (distance < 0) {
+    clearInterval(countdownTimer);
+    document.getElementById("countdown").innerHTML = "<h2>🎉 بدأ الحفل 🎉</h2>";
+    return;
+  }
 
-const distance = weddingDate - now;
-
-const days = Math.floor(distance/(1000*60*60*24));
-
-const hours = Math.floor((distance%(1000*60*60*24))/(1000*60*60));
-
-const minutes = Math.floor((distance%(1000*60*60))/(1000*60));
-
-const seconds = Math.floor((distance%(1000*60))/1000);
-
-document.getElementById("days").innerHTML = days;
-
-document.getElementById("hours").innerHTML = hours;
-
-document.getElementById("minutes").innerHTML = minutes;
-
-document.getElementById("seconds").innerHTML = seconds;
-
-if(distance<0){
-
-clearInterval(countdown);
-
-document.getElementById("countdown").innerHTML="<h2>🎉 بدأ الحفل 🎉</h2>";
-
+  document.getElementById("days").textContent = Math.floor(distance / 86400000);
+  document.getElementById("hours").textContent = Math.floor((distance % 86400000) / 3600000);
+  document.getElementById("minutes").textContent = Math.floor((distance % 3600000) / 60000);
+  document.getElementById("seconds").textContent = Math.floor((distance % 60000) / 1000);
 }
 
-},1000);
-
+const countdownTimer = setInterval(updateCountdown, 1000);
+updateCountdown();
 
 /* ===========================
-FLOWERS
+   FLOWERS (أخف على الموبايل)
 =========================== */
+const flowers = document.getElementById("flowers");
+const maxFlowers = isTouch ? 8 : 25;
 
-const flowers=document.getElementById("flowers");
+function createFlower() {
+  if (document.hidden || flowers.children.length >= maxFlowers) return;
 
-function createFlower(){
+  const flower = document.createElement("div");
+  flower.textContent = "🌸";
+  flower.classList.add("flower");
+  flower.style.left = Math.random() * 95 + "vw";
+  flower.style.fontSize = Math.random() * 14 + (isTouch ? 14 : 18) + "px";
+  flower.style.animationDuration = Math.random() * 5 + 6 + "s";
+  flowers.appendChild(flower);
 
-const flower=document.createElement("div");
-
-flower.innerHTML="🌸";
-
-flower.classList.add("flower");
-
-flower.style.left=Math.random()*100+"vw";
-
-flower.style.fontSize=Math.random()*20+15+"px";
-
-flower.style.animationDuration=Math.random()*5+5+"s";
-
-flowers.appendChild(flower);
-
-setTimeout(()=>{
-
-flower.remove();
-
-},10000);
-
+  setTimeout(() => flower.remove(), 11000);
 }
 
-setInterval(createFlower,300);
-
-
-/* ===========================
-SCROLL ANIMATION
-=========================== */
-
-const sections=document.querySelectorAll("section");
-
-const observer=new IntersectionObserver(entries=>{
-
-entries.forEach(entry=>{
-
-if(entry.isIntersecting){
-
-entry.target.classList.add("show");
-
-}
-
-});
-
-});
-
-sections.forEach(section=>{
-
-section.classList.add("hidden");
-
-observer.observe(section);
-
-});
-
+if (!reduceMotion) setInterval(createFlower, isTouch ? 900 : 350);
 
 /* ===========================
-BACK TO TOP
+   SCROLL ANIMATION
 =========================== */
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add("show");
+      observer.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.08 });
 
-const topBtn=document.createElement("button");
+document.querySelectorAll("section").forEach(section => {
+  section.classList.add("hidden");
+  observer.observe(section);
+});
 
-topBtn.innerHTML="⬆";
-
-topBtn.id="topBtn";
-
+/* ===========================
+   BACK TO TOP
+=========================== */
+const topBtn = document.createElement("button");
+topBtn.textContent = "⬆";
+topBtn.id = "topBtn";
+topBtn.setAttribute("aria-label", "للأعلى");
 document.body.appendChild(topBtn);
 
-window.addEventListener("scroll",()=>{
+window.addEventListener("scroll", () => {
+  topBtn.style.display = window.scrollY > 500 ? "block" : "none";
+}, { passive: true });
 
-if(window.scrollY>500){
-
-topBtn.style.display="block";
-
-}else{
-
-topBtn.style.display="none";
-
-}
-
-});
-
-topBtn.onclick=()=>{
-
-window.scrollTo({
-
-top:0,
-
-behavior:"smooth"
-
-});
-
-};
-
+topBtn.onclick = () => window.scrollTo({ top: 0, behavior: "smooth" });
 
 /* ===========================
-CONFETTI
+   TOAST + CONFETTI
 =========================== */
+const toast = document.getElementById("toast");
+let toastTimer;
 
-const form=document.querySelector("form");
-
-form.addEventListener("submit",(e)=>{
-
-e.preventDefault();
-
-alert("❤️ شكراً لتأكيد حضوركم ❤️");
-
-for(let i=0;i<120;i++){
-
-const c=document.createElement("div");
-
-c.className="confetti";
-
-c.style.left=Math.random()*100+"vw";
-
-c.style.background=`hsl(${Math.random()*360},100%,60%)`;
-
-c.style.animationDuration=Math.random()*3+2+"s";
-
-document.body.appendChild(c);
-
-setTimeout(()=>{
-
-c.remove();
-
-},5000);
-
+function showToast(msg) {
+  toast.textContent = msg;
+  toast.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toast.classList.remove("show"), 3500);
 }
 
+const form = document.querySelector("form");
+
+/* الصق هنا رابط Web App اللي هتاخده من Google Apps Script
+   (الخطوات في ملف README-RSVP.txt) */
+const SHEET_URL = "";
+
+function launchConfetti() {
+  if (reduceMotion) return;
+  const count = isTouch ? 50 : 120;
+  for (let i = 0; i < count; i++) {
+    const c = document.createElement("div");
+    c.className = "confetti";
+    c.style.left = Math.random() * 100 + "vw";
+    c.style.background = `hsl(${Math.random() * 360},100%,60%)`;
+    c.style.animationDuration = Math.random() * 3 + 2 + "s";
+    document.body.appendChild(c);
+    setTimeout(() => c.remove(), 5000);
+  }
+}
+
+form.addEventListener("submit", async e => {
+  e.preventDefault();
+
+  if (!SHEET_URL) {
+    showToast("لم يتم ربط النموذج بالشيت بعد");
+    return;
+  }
+
+  const btn = form.querySelector("button[type=submit]");
+  const label = btn.textContent;
+  btn.disabled = true;
+  btn.textContent = "جاري الإرسال...";
+
+  try {
+    await fetch(SHEET_URL, {
+      method: "POST",
+      mode: "no-cors", // Apps Script مش بيرجّع CORS headers، والبيانات بتتسجل عادي
+      body: new URLSearchParams(new FormData(form))
+    });
+    showToast("❤️ شكراً لتأكيد حضوركم ❤️");
+    form.reset();
+    launchConfetti();
+  } catch (err) {
+    showToast("تعذّر الإرسال، تأكد من الإنترنت وحاول مرة أخرى");
+  } finally {
+    btn.disabled = false;
+    btn.textContent = label;
+  }
 });
 
-
 /* ===========================
-MUSIC
+   MUSIC
+   (ملف الأغنية لازم يتحط في music/wedding.mp3)
 =========================== */
+const music = new Audio("music/wedding.mp3");
+music.loop = true;
+music.preload = "none";
 
-const music=new Audio("music/wedding.mp3");
-
-music.loop=true;
-
-const musicBtn=document.createElement("button");
-
-musicBtn.innerHTML="🎵";
-
-musicBtn.id="musicBtn";
-
+const musicBtn = document.createElement("button");
+musicBtn.textContent = "🎵";
+musicBtn.id = "musicBtn";
+musicBtn.setAttribute("aria-label", "تشغيل الموسيقى");
 document.body.appendChild(musicBtn);
 
-let playing=false;
+let playing = false;
+let musicBroken = false;
 
-musicBtn.onclick=()=>{
-
-if(!playing){
-
-music.play();
-
-musicBtn.innerHTML="⏸";
-
-playing=true;
-
-}else{
-
-music.pause();
-
-musicBtn.innerHTML="🎵";
-
-playing=false;
-
-}
-
-};
-
-
-/* ===========================
-IMAGE POPUP
-=========================== */
-
-const images=document.querySelectorAll(".gallery img");
-
-images.forEach(img=>{
-
-img.onclick=()=>{
-
-const popup=document.createElement("div");
-
-popup.style.position="fixed";
-
-popup.style.inset="0";
-
-popup.style.background="rgba(0,0,0,.9)";
-
-popup.style.display="flex";
-
-popup.style.alignItems="center";
-
-popup.style.justifyContent="center";
-
-popup.style.zIndex="99999";
-
-const image=document.createElement("img");
-
-image.src=img.src;
-
-image.style.maxWidth="90%";
-
-image.style.maxHeight="90%";
-
-image.style.borderRadius="20px";
-
-popup.appendChild(image);
-
-popup.onclick=()=>popup.remove();
-
-document.body.appendChild(popup);
-
-};
-
+music.addEventListener("error", () => {
+  musicBroken = true;
+  musicBtn.style.display = "none"; // نخفي الزر لو الملف مش موجود
 });
 
+musicBtn.onclick = () => {
+  if (musicBroken) return;
+  if (!playing) {
+    music.play().then(() => {
+      musicBtn.textContent = "⏸";
+      playing = true;
+    }).catch(() => {});
+  } else {
+    music.pause();
+    musicBtn.textContent = "🎵";
+    playing = false;
+  }
+};
 
 /* ===========================
-HEART CURSOR
+   IMAGE POPUP
 =========================== */
+document.querySelectorAll(".gallery img").forEach(img => {
+  img.addEventListener("click", () => {
+    const box = document.createElement("div");
+    box.className = "lightbox";
 
-document.addEventListener("mousemove",(e)=>{
+    const image = document.createElement("img");
+    image.src = img.src;
+    image.alt = img.alt;
 
-const heart=document.createElement("span");
+    const close = document.createElement("button");
+    close.textContent = "✕";
+    close.setAttribute("aria-label", "إغلاق");
 
-heart.innerHTML="❤";
+    box.append(image, close);
 
-heart.style.position="fixed";
+    const remove = () => {
+      box.remove();
+      document.body.classList.remove("no-scroll");
+    };
 
-heart.style.left=e.clientX+"px";
+    box.addEventListener("click", remove);
+    document.body.classList.add("no-scroll");
+    document.body.appendChild(box);
+  });
+});
 
-heart.style.top=e.clientY+"px";
+/* ===========================
+   HEART CURSOR (للماوس فقط)
+=========================== */
+if (!isTouch && !reduceMotion) {
+  document.addEventListener("mousemove", e => {
+    const heart = document.createElement("span");
+    heart.textContent = "❤";
+    Object.assign(heart.style, {
+      position: "fixed",
+      left: e.clientX + "px",
+      top: e.clientY + "px",
+      color: "rgba(255,215,0,.7)",
+      pointerEvents: "none",
+      fontSize: "14px",
+      transition: "1s",
+      zIndex: 99997
+    });
+    document.body.appendChild(heart);
 
-heart.style.color="rgba(255,215,0,.7)";
+    setTimeout(() => {
+      heart.style.transform = "translateY(-25px)";
+      heart.style.opacity = "0";
+    }, 20);
 
-heart.style.pointerEvents="none";
+    setTimeout(() => heart.remove(), 1000);
+  });
+}
 
-heart.style.fontSize="14px";
 
-heart.style.transition="1s";
+/* ===========================
+   ADD TO CALENDAR (.ics)
+=========================== */
+document.getElementById("calBtn").addEventListener("click", () => {
+  const ics = [
+    "BEGIN:VCALENDAR",
+    "VERSION:2.0",
+    "PRODID:-//Wedding//AR",
+    "BEGIN:VEVENT",
+    "UID:wedding-mohamed-hend-2027@invite",
+    "DTSTAMP:20261029T000000Z",
+    "DTSTART:20270312T200000",
+    "DTEND:20270312T230000",
+    "SUMMARY:حفل زفاف محمد وهند",
+    "LOCATION:قاعة ريونا - دكرنس",
+    "BEGIN:VALARM",
+    "TRIGGER:-P1D",
+    "ACTION:DISPLAY",
+    "DESCRIPTION:حفل زفاف محمد وهند غداً",
+    "END:VALARM",
+    "END:VEVENT",
+    "END:VCALENDAR"
+  ].join("\r\n");
 
-document.body.appendChild(heart);
-
-setTimeout(()=>{
-
-heart.style.transform="translateY(-25px)";
-
-heart.style.opacity="0";
-
-},20);
-
-setTimeout(()=>{
-
-heart.remove();
-
-},1000);
-
+  const url = URL.createObjectURL(new Blob([ics], { type: "text/calendar;charset=utf-8" }));
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "wedding.ics";
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 2000);
 });
